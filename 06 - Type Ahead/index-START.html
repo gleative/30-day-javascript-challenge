@@ -1,22 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Type Ahead 👀</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Type Ahead 👀</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <form class="search-form">
+      <input type="text" class="search" placeholder="City or State" oninput="filterList(this.value.toLowerCase())" />
+      <ul class="suggestions">
+        <li>Filter for a city</li>
+        <li>or a state</li>
+      </ul>
 
-  <form class="search-form">
-    <input type="text" class="search" placeholder="City or State">
-    <ul class="suggestions">
-      <li>Filter for a city</li>
-      <li>or a state</li>
-    </ul>
-  </form>
-<script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+      <p class="result-amount-container" style="visibility: hidden">Found: <span class="result-amount"></span></p>
+      <ul class="result-list"></ul>
+    </form>
+    <script>
+      const endpoint =
+        'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
 
-</script>
-</body>
+      const inputField = document.querySelector('.search');
+      const resultList = document.querySelector('.result-list');
+      const resultAmountContainer = document.querySelector('.result-amount-container');
+      const resultAmount = document.querySelector('.result-amount');
+
+      getCityList();
+
+      let cityList = null;
+
+      async function getCityList() {
+        const response = await fetch(endpoint);
+        cityList = await response.json();
+        console.log('cityList', cityList);
+      }
+
+      function filterList(value) {
+        console.log('filterList', value);
+
+        if (cityList) {
+          const filteredList = cityList.filter((location) => {
+            const cityName = location.city.toLowerCase();
+            const stateName = location.state.toLowerCase();
+
+            if (cityName.includes(value)) {
+              return cityName;
+            } else if (stateName.includes(value)) {
+              return stateName;
+            }
+          });
+          console.log(filteredList);
+
+          resultAmountContainer.style.visibility = 'visible';
+          resultAmount.innerHTML = filteredList.length;
+          populateResultList(filteredList);
+        } else {
+          console.error('cityList is null!');
+        }
+      }
+
+      function populateResultList(list) {
+        // Clear list in view, so it will show the updated list to the viewer
+        clearListElements();
+
+        list.forEach((cityOrState) => {
+          const node = document.createElement('LI');
+          const textNode = document.createTextNode(`City: ${cityOrState.city}, State: ${cityOrState.state}`);
+          node.appendChild(textNode);
+
+          resultList.appendChild(node);
+        });
+      }
+
+      // Går faktisk an å bare slette "ul" html element også, istedenfor å slette "li". Men kanskje tryggest å slette alle li?
+      function clearListElements() {
+        const resultListElements = resultList.querySelectorAll('li');
+        // console.log('resultList nodes', resultListElements);
+
+        resultListElements.forEach((li) => resultList.removeChild(li));
+      }
+    </script>
+  </body>
 </html>
