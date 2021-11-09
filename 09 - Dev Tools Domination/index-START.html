@@ -1,46 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Console Tricks!</title>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Console Tricks!</title>
+  </head>
+  <body>
+    <p onClick="makeGreen()">×BREAK×DOWN×</p>
 
-  <p onClick="makeGreen()">×BREAK×DOWN×</p>
+    <script>
+      const dogs = [
+        { name: 'Snickers', age: 2 },
+        { name: 'hugo', age: 8 },
+      ];
 
-  <script>
-    const dogs = [{ name: 'Snickers', age: 2 }, { name: 'hugo', age: 8 }];
+      function makeGreen() {
+        console.count('function attached to <p> tag is clicked');
+        const p = document.querySelector('p');
+        p.style.color = '#BADA55';
+        p.style.fontSize = '50px';
+      }
 
-    function makeGreen() {
+      // Regular
+      console.log('Regular console.log');
+
+      // Interpolated
+      console.log(`The first dogs name is: ${dogs[0].name}`);
+      console.log('Why you do this %s', '😡');
+
+      // Styled
+      console.log(
+        'Everything after this sentence, is styled. %cWoooow, so cool!',
+        'color: cyan; font-size: 12px; font-weight: bold; padding: 10px;'
+      );
+
+      // warning!
+      console.warn('This is a warning!');
+
+      // Error :|
+      console.error('This is a error!');
+
+      // Info
+      console.info('Info.....', dogs);
+
+      // Testing
+      console.assert(dogs[0].name === 'hugo', 'Did not match');
+
+      // clearing
+      // ? Clears the console
+      // console.clear();
+
+      // Viewing DOM Elements
       const p = document.querySelector('p');
-      p.style.color = '#BADA55';
-      p.style.fontSize = '50px';
-    }
+      console.dir(p);
+      console.dirxml('This show object as HTML/XML:', p);
 
-    // Regular
+      // Grouping together
+      console.log('Outputting dogs grouped');
+      console.group();
+      console.log('Dog name: %s', dogs[0].name);
+      console.log('Dog age: %d', dogs[0].age);
+      console.group();
+      console.log('Dog name: %s', dogs[1].name);
+      console.log('Dog age: %d', dogs[1].age);
+      // Remember to groupEnd when you dont want clg to append to the current group
+      console.groupEnd();
+      // Must do it twice, since we created a 2 layered group
+      console.groupEnd();
 
-    // Interpolated
+      // counting
+      console.count();
 
-    // Styled
-
-    // warning!
-
-    // Error :|
-
-    // Info
-
-    // Testing
-
-    // clearing
-
-    // Viewing DOM Elements
-
-    // Grouping together
-
-    // counting
-
-    // timing
-
-  </script>
-</body>
+      // timing
+      console.log('How long does it take to print out dogs?');
+      console.time('printDogs');
+      dogs.forEach((dog, idx) => console.log('Dog number %d name is: %s, and age is %d', idx + 1, dog.name, dog.age));
+      console.timeEnd('printDogs');
+    </script>
+  </body>
 </html>
